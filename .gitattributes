@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+# Windows PowerShell scripts are kept CRLF for the Windows console
+*.ps1 text eol=crlf
+
+*.png binary
+*.jpg binary
+*.docx binary
+*.pdf binary

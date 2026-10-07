@@ -1,0 +1,120 @@
+{
+  "_comment": "论文修改验收配置模板。由 inspect_docx.py 输出的 suggestedConfig 生成后按需修改；除路径外所有键均可选，缺失的检查项会记为 SKIP。",
+  "_usage": "python verify_revision.py <docx> --config task_config.json",
+
+  "docx": "<论文文件名>.docx",
+
+  "refCount": 16,
+  "refHeadingText": "参考文献",
+  "refHeadingStyle": "2",
+  "refEndMarkers": ["评语", "致谢", "附录"],
+
+  "sections": {
+    "count": 2,
+    "expected": [
+      { "fmt": "upperRoman", "start": "1" },
+      { "fmt": "decimal", "start": "1" }
+    ]
+  },
+
+  "superscripts": {
+    "expectCount": 19,
+    "expectCoverage": 16,
+    "maxEmpty": 0
+  },
+
+  "tables": [
+    {
+      "label": "性能测试结果表",
+      "firstRowContains": "测试项",
+      "rows": 6
+    }
+  ],
+
+  "_expectTables_comment": "推荐用法：按题注定位关键表格。论文里常有文本框表格（无题注、行数随内容变化），按 body 内序号定位会错位——学生C论文的'表5-1'在 body 表格序号里其实是第 5 张。captionContains 用题注文字前缀即可。",
+  "expectTables": [
+    { "label": "表5-1 用例测试情况", "captionContains": "表5-1", "rows": 6 },
+    { "label": "表5-2 系统性能测试结果", "captionContains": "表5-2", "rows": 5 }
+  ],
+
+  "media": {
+    "word/media/image5.png": 123456
+  },
+
+  "fontChecks": [
+    {
+      "paragraphContains": "致谢",
+      "expectEastAsia": "仿宋_GB2312"
+    }
+  ],
+
+  "headingStyles": ["2", "3"],
+  "requireHeadingsNotBold": true,
+
+  "_formatChecks_comment": "段落级格式验收：学校格式检查器读的就是这些值。styleId 用于按标题样式定位（本例 2=章标题 / 3=一级节标题 / 4=二级节标题）；contains 用于正文/题注/文献这类无 pStyle 的段落。tocStyles 与 bodyStartContains 必须给：封面题目也带 outlineLvl、目录条目也可能带标题样式号，不排除就会误判（详见 SKILL.md 陷阱十三）。数值单位 twips（1磅=20twips）：480=段前24磅=空两行，400=行距20磅，320=行距16磅，240=单倍行距，480=首行缩进2字符。",
+  "formatChecks": {
+    "tocStyles": ["21", "23", "14"],
+    "bodyStartContains": "绪言",
+    "paragraphs": [
+      {
+        "role": "章标题（黑体三号加粗居中，段前24磅=空两行，段后18磅）",
+        "styleId": "2",
+        "expect": { "eastAsia": "黑体", "sz": "32", "jc": "center",
+                    "before": "480", "after": "360", "line": "240",
+                    "lineRule": "auto" }
+      },
+      {
+        "role": "一级节标题（黑体小三，段前24磅=空两行，段后6磅）",
+        "styleId": "3",
+        "expect": { "eastAsia": "黑体", "sz": "30", "jc": "left",
+                    "before": "480", "after": "120", "line": "240",
+                    "lineRule": "auto" }
+      },
+      {
+        "role": "二级节标题（黑体四号，段前12磅，段后6磅）",
+        "styleId": "4",
+        "expect": { "eastAsia": "黑体", "sz": "28", "jc": "left",
+                    "before": "240", "after": "120", "line": "240",
+                    "lineRule": "auto" }
+      },
+      {
+        "role": "正文（宋体小四，行距20磅，首行缩进2字符，两端对齐）",
+        "contains": "<正文首段的一句独特文字>",
+        "expect": { "eastAsia": "宋体", "ascii": "Times New Roman", "sz": "24",
+                    "line": "400", "lineRule": "exact", "before": "0",
+                    "after": "0", "firstLine": "480", "jc": "both" }
+      },
+      {
+        "role": "图题注（宋体五号居中，段前6磅、段后12磅）",
+        "contains": "图4-3 用户登录流程图",
+        "expect": { "eastAsia": "宋体", "sz": "21", "jc": "center",
+                    "before": "120", "after": "240", "line": "240",
+                    "lineRule": "auto" }
+      },
+      {
+        "role": "表题注（宋体五号居中，段前6磅、段后6磅）",
+        "contains": "表5-1 用例测试情况",
+        "expect": { "eastAsia": "宋体", "sz": "21", "jc": "center",
+                    "before": "120", "after": "120" }
+      },
+      {
+        "role": "参考文献条目（宋体五号，行距16磅，顶格）",
+        "contains": "<文后第一条文献的前几个字>",
+        "expect": { "eastAsia": "宋体", "ascii": "Times New Roman", "sz": "21",
+                    "line": "320", "lineRule": "exact", "before": "0",
+                    "after": "0", "firstLine": "0", "jc": "both" }
+      }
+    ]
+  },
+
+  "_docCounts_comment": "document.xml 结构不变量：重新打包/整段重写最容易静默丢图片、目录书签、域或表格。键是原始 XML 子串，值是基线计数（改前文件的字节统计）。计划内新增的图/表要把计数同步改掉；书签计数必须保持不变（重建参考文献段很容易掉 _Ref 书签，见 SKILL.md 陷阱十六）。注意 docCounts 里不能放 _comment 之类的说明键，会被当成待计数子串。",
+  "docCounts": {
+    "<w:drawing>": 32,
+    "<w:pict>": 1,
+    "<w:bookmarkStart": 142,
+    "<w:bookmarkEnd": 142,
+    "<w:tbl>": 7,
+    "<w:sectPr": 2,
+    "<w:fldChar": 363
+  }
+}

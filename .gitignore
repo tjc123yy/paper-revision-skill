@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+
+# local-only, contains student names / IDs / advisor comments
+tasks/
+_task/
+corpus/records/
+corpus/major_map.json
+corpus/sources.json
+corpus/pending_vision.json
+
+# real papers never belong in this repo
+*.docx
+*.doc
+*.pdf
+*.jpg
+*.jpeg
+*.zip
+*.rar
